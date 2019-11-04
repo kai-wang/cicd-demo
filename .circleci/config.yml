@@ -52,6 +52,6 @@ workflows:
             - setup_dx
           filters:
             branches: 
-              only: /develop.*/
+              only: /.*develop.*/
 
   
