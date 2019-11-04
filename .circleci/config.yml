@@ -99,7 +99,7 @@ workflows:
   build:
     jobs:
       - setup_dx
-      - QA:
+      - Packaging:
           requires:
             - setup_dx
           filters:
