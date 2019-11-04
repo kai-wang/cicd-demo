@@ -47,15 +47,21 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: "packaging"
+          name: "authenticate"
           command: |
             # Authenticate to the Dev Hub using the server key
             sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
+      - run:
+          name: "create scratch org"
+          command: |
             # Create scratch org
             sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
             
             sfdx force:org:display
             # Increment package version number
+      - run:
+          name: "package information"
+          command: |
             echo $PACKAGE_NAME
             PACKAGE_VERSION_JSON="$(eval sfdx force:package:version:list --concise --released --packages $PACKAGE_NAME --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
             echo $PACKAGE_VERSION_JSON
