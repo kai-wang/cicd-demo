@@ -89,7 +89,7 @@ jobs:
             # echo artifacts
             cat PACKAGE_VERSION_ID.TXT
       - store_artifacts:
-          path: $PWD/PACKAGE_VERSION_ID.TXT
+          path: PACKAGE_VERSION_ID.TXT
 
 workflows:
   version: 2
