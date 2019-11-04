@@ -99,11 +99,11 @@ workflows:
   build:
     jobs:
       - setup_dx
-      - Packaging:
+      - QA:
           requires:
             - setup_dx
-            filters:
-              branches:
-                only: /.*develop.*/
+          filters:
+            branches: 
+              only: /.*develop.*/
 
   
