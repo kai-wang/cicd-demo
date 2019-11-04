@@ -93,10 +93,10 @@ jobs:
             # Display username, password, and instance URL for login
             # Be careful not to do this in a publicly accessible pipeline as it exposes the credentials of your scratch org
             sfdx force:user:display
-            
+
 workflows:
   version: 2
-  QA:
+  build:
     jobs:
       - setup_dx
       - QA:
