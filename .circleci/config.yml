@@ -86,6 +86,11 @@ jobs:
             echo $PACKAGE_VERSION_ID
             # Install package in DevHub org (this is a compiled library of the app)
             sfdx force:package:list
+            # echo artifacts
+            cat PACKAGE_VERSION_ID.TXT
+      - store_atrifacts:
+          path: $PWD/PACKAGE_VERSION_ID.TXT
+
 workflows:
   version: 2
   build:
