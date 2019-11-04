@@ -65,27 +65,6 @@ jobs:
             echo $PACKAGE_NAME
             PACKAGE_VERSION_JSON="$(eval sfdx force:package:version:list --concise --released --packages $PACKAGE_NAME --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
             echo $PACKAGE_VERSION_JSON
-      - run:
-          name: "extract packge information"
-          command: |
-            IS_RELEASED=$(echo $PACKAGE_VERSION_JSON | jq -r '.IsReleased?')
-            MAJOR_VERSION=$(echo $PACKAGE_VERSION_JSON | jq -r '.MajorVersion?')
-            MINOR_VERSION=$(echo $PACKAGE_VERSION_JSON | jq -r '.MinorVersion?')
-            PATCH_VERSION=$(echo $PACKAGE_VERSION_JSON | jq -r '.PatchVersion?')
-            BUILD_VERSION="NEXT"
-            if [ -z $MAJOR_VERSION ]; then MAJOR_VERSION=1; fi;
-            if [ -z $MINOR_VERSION ]; then MINOR_VERSION=0; fi;
-            if [ -z $PATCH_VERSION ]; then PATCH_VERSION=0; fi;
-            if [ "$IS_RELEASED" == "true" ]; then MINOR_VERSION=$(($MINOR_VERSION+1)); fi;
-            VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
-            echo $VERSION_NUMBER
-            # Create packaged version
-            export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
-            # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
-            echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
-            echo $PACKAGE_VERSION_ID
-            # Install package in DevHub org (this is a compiled library of the app)
-            sfdx force:package:list
 workflows:
   version: 2
   build:
