@@ -42,7 +42,8 @@ jobs:
           name: "Cleanup"
           command: |
             # Delete Scratch Org
-            sfdx force:org:delete --noprompt
+            echo "delete the scratch org"
+            # sfdx force:org:delete --noprompt
           when: always
 
   SIT Deployment:
