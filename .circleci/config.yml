@@ -107,7 +107,7 @@ workflows:
             - setup_dx
           filters:
             branches: 
-              only: /.*develop.*/
+              only: /develop.*/
       - SIT Deployment:
           requires:
             - setup_dx
