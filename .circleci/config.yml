@@ -60,13 +60,13 @@ jobs:
           name: "Create scratch org"
           command: |
             # Create scratch org
-            # sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
+            sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
             
-            #sfdx force:org:display
-            # Increment package version number
+            sfdx force:org:display
       - run:
           name: "Display package version"
           command: |
+            # Increment package version number
             echo $PACKAGE_NAME
             PACKAGE_VERSION_JSON="$(eval sfdx force:package:version:list --concise --released --packages $PACKAGE_NAME --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
             echo $PACKAGE_VERSION_JSON | jq .
@@ -85,7 +85,7 @@ jobs:
             VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
             echo $VERSION_NUMBER
       - run:
-          name: "Create new package and release artifacts"
+          name: "Create new package"
           command: |
             # Create packaged version
             export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
@@ -94,6 +94,24 @@ jobs:
             echo $PACKAGE_VERSION_ID
             # Install package in DevHub org (this is a compiled library of the app)
             sfdx force:package:list
+      - run:
+          name: "Install package to scratch org"
+          command: |
+            sfdx force:package:install --package $PACKAGE_VERSION_ID --wait 10 --publishwait 10 --noprompt
+            # Assign DreamHouse permission set to scratch org default user
+            sfdx force:user:permset:assign --permsetname DreamHouse
+            # Add sample data into app
+            sfdx force:data:tree:import --plan data/sample-data-plan.json
+            # Run unit tests in scratch org
+            sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
+      - run:
+          name: "Cleanup Scratch Org"
+          command: |
+            # Delete Scratch Org
+            echo "delete the scratch org"
+            sfdx force:org:delete --noprompt
+          when: always
+
       - store_artifacts:
           path: PACKAGE_VERSION_ID.TXT
 
