@@ -23,7 +23,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: "verity in scratch org"
+          name: "Verity in scratch org"
           command: |
             sfdx force:auth:jwt:grant --clientid $SF_CONSUMER_KEY --jwtkeyfile $PWD/assets/server.key --username $SF_USERNAME --setdefaultdevhubusername -a HubOrg
             # Create scratch org
@@ -39,7 +39,7 @@ jobs:
             # Unit Testing
             # sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
       - run:
-          name: "Cleanup"
+          name: "Cleanup Scratch Org"
           command: |
             # Delete Scratch Org
             echo "delete the scratch org"
@@ -52,7 +52,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: "authenticate"
+          name: "Authorize to DevHub"
           command: |
             # Authenticate to the Dev Hub using the server key
             sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
