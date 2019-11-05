@@ -17,7 +17,7 @@ jobs:
           paths:
             - .sfdx/*
             - project/*
-  QA:
+  QA Deployment:
     <<: *defaults
     steps: # steps that comprise the `build` job
       - attach_workspace:
@@ -43,9 +43,8 @@ jobs:
       - run:
           name: "Cleanup"
           command: |
-            sfdx force:org:delete;
-
-  Packaging:
+            sfdx force:org:delete
+  SIT Deployment:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -101,12 +100,25 @@ workflows:
   build:
     jobs:
       - setup_dx
-      - Packaging:
-          type: approval
+      - QA Deployment:
           requires:
             - setup_dx
           filters:
             branches: 
               only: /.*develop.*/
+      - SIT Deployment:
+          requires:
+            - setup_dx
+          filters:
+            branches: 
+              only: /combined/
+      - Staging Deployment:
+          type: approval
+          requires:
+            - setup_dx
+          filters:
+            branches:
+              only: /release.*/
+
 
   
