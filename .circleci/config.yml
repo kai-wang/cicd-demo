@@ -27,23 +27,24 @@ jobs:
           command: |
             sfdx force:auth:jwt:grant --clientid $SF_CONSUMER_KEY --jwtkeyfile $PWD/assets/server.key --username $SF_USERNAME --setdefaultdevhubusername -a HubOrg
             # Create scratch org
-            sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
+            # sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
             # Display scratch org details
-            sfdx force:org:display
+            # sfdx force:org:display
             # Push source to scratch org (this is with source code, all files, etc)
-            sfdx force:source:push
+            # sfdx force:source:push
             # Assign DreamHouse permission set to scratch org default user
-            sfdx force:user:permset:assign --permsetname DreamHouse
+            # sfdx force:user:permset:assign --permsetname DreamHouse
             # Add sample data into app
-            sfdx force:data:tree:import --plan data/sample-data-plan.json
+            # sfdx force:data:tree:import --plan data/sample-data-plan.json
             # Unit Testing
-            sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
-            # Delete Scratch Org
-            sfdx force:org:delete --noprompt
+            # sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
       - run:
           name: "Cleanup"
           command: |
-            sfdx force:org:delete
+            # Delete Scratch Org
+            sfdx force:org:delete --noprompt
+          when: always
+
   SIT Deployment:
     <<: *defaults
     steps:
