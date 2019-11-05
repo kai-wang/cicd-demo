@@ -1,6 +1,5 @@
 public with sharing class HandlerFindAccount implements BotHandler {
-    // complete the user story #123
-    // commit the changes to feature branch
+    // Complete the user story #123, Commit the changes to feature branch
     public BotResponse handle(String utterance, String[] params, Map<String, String> session, String fileName, String fileContent) {
         String key = '%' + params[0] + '%';
         List<Account> accounts = 
