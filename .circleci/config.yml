@@ -102,6 +102,9 @@ workflows:
   build:
     jobs:
       - setup_dx
+          filters:
+            branches:
+              ignore: /feature.*/
       - QA Deployment:
           requires:
             - setup_dx
