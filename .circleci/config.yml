@@ -57,7 +57,7 @@ jobs:
             # Create scratch org
             # sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
             
-            sfdx force:org:display
+            #sfdx force:org:display
             # Increment package version number
       - run:
           name: "package json"
