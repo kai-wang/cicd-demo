@@ -101,13 +101,16 @@ workflows:
   version: 2
   build:
     jobs:
-      - setup_dx
+      - setup_dx:
+          filters:
+            branches:
+              ignore: /feature.*/
       - QA Deployment:
           requires:
             - setup_dx
           filters:
             branches: 
-              only: /.*develop.*/
+              only: /develop.*/
       - SIT Deployment:
           requires:
             - setup_dx
