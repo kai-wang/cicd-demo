@@ -60,13 +60,13 @@ jobs:
             #sfdx force:org:display
             # Increment package version number
       - run:
-          name: "package json"
+          name: "Display package version"
           command: |
             echo $PACKAGE_NAME
             PACKAGE_VERSION_JSON="$(eval sfdx force:package:version:list --concise --released --packages $PACKAGE_NAME --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
-            echo $PACKAGE_VERSION_JSON
+            echo $PACKAGE_VERSION_JSON | jq .
       - run:
-          name: "extract packge information"
+          name: "Increase package version"
           command: |
             IS_RELEASED=$(echo $PACKAGE_VERSION_JSON | jq -r '.IsReleased?')
             MAJOR_VERSION=$(echo $PACKAGE_VERSION_JSON | jq -r '.MajorVersion?')
@@ -79,6 +79,9 @@ jobs:
             if [ "$IS_RELEASED" == "true" ]; then MINOR_VERSION=$(($MINOR_VERSION+1)); fi;
             VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
             echo $VERSION_NUMBER
+      - run:
+          name: "Create new package and release artifacts"
+          command: |
             # Create packaged version
             export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
             # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
@@ -86,8 +89,6 @@ jobs:
             echo $PACKAGE_VERSION_ID
             # Install package in DevHub org (this is a compiled library of the app)
             sfdx force:package:list
-            # echo artifacts
-            cat PACKAGE_VERSION_ID.TXT
       - store_artifacts:
           path: PACKAGE_VERSION_ID.TXT
 
