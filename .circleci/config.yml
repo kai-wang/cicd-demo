@@ -25,7 +25,6 @@ jobs:
       - run:
           name: "verity in scratch org"
           command: |
-            ls -al
             sfdx force:auth:jwt:grant --clientid $SF_CONSUMER_KEY --jwtkeyfile $PWD/assets/server.key --username $SF_USERNAME --setdefaultdevhubusername -a HubOrg
             # Create scratch org
             sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
@@ -41,6 +40,11 @@ jobs:
             sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
             # Delete Scratch Org
             sfdx force:org:delete --noprompt
+      - run:
+          name: "Cleanup"
+          command: |
+            sfdx force:org:delete;
+
   Packaging:
     <<: *defaults
     steps:
@@ -52,7 +56,7 @@ jobs:
             # Authenticate to the Dev Hub using the server key
             sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
       - run:
-          name: "create scratch org"
+          name: "Create scratch org"
           command: |
             # Create scratch org
             # sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
@@ -98,6 +102,7 @@ workflows:
     jobs:
       - setup_dx
       - Packaging:
+          type: approval
           requires:
             - setup_dx
           filters:
