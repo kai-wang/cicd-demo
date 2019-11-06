@@ -60,9 +60,9 @@ jobs:
           name: "Create scratch org"
           command: |
             # Create scratch org
-            # sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
+            sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
             
-            # sfdx force:org:display
+            sfdx force:org:display
       - run:
           name: "Display package version"
           command: |
@@ -85,7 +85,7 @@ jobs:
             export VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
             echo $VERSION_NUMBER
             # Create packaged version
-            PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create -x --package DreamHouse --versionnumber $VERSION_NUMBER --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+            export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create -x --package DreamHouse --versionnumber $VERSION_NUMBER --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
             # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
             echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
             echo $PACKAGE_VERSION_ID
@@ -106,7 +106,7 @@ jobs:
           command: |
             # Delete Scratch Org
             echo "delete the scratch org"
-            # sfdx force:org:delete --noprompt
+            sfdx force:org:delete --noprompt
           when: always
 
       - store_artifacts:
