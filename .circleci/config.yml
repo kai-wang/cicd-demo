@@ -60,7 +60,7 @@ jobs:
           name: "Create scratch org"
           command: |
             # Create scratch org
-            sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
+            # sfdx force:org:create --setdefaultusername --definitionfile config/project-scratch-def.json --wait 10 --durationdays 1
             
             sfdx force:org:display
       - run:
@@ -84,6 +84,7 @@ jobs:
             if [ "$IS_RELEASED" = "true" ]; then MINOR_VERSION=$(($MINOR_VERSION+1)); fi;
             VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
             echo $VERSION_NUMBER
+            echo $PACKAGE_NAME
       - run:
           name: "Create new package"
           command: |
@@ -109,7 +110,7 @@ jobs:
           command: |
             # Delete Scratch Org
             echo "delete the scratch org"
-            sfdx force:org:delete --noprompt
+            # sfdx force:org:delete --noprompt
           when: always
 
       - store_artifacts:
@@ -120,9 +121,6 @@ workflows:
   build:
     jobs:
       - setup_dx:
-          filters:
-            branches:
-              ignore: /feature.*/
       - QA Deployment:
           requires:
             - setup_dx
@@ -134,7 +132,7 @@ workflows:
             - setup_dx
           filters:
             branches: 
-              only: /combined/
+              only: /feature.*/
       - Staging Deployment:
           type: approval
           requires:
