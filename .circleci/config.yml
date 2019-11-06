@@ -120,7 +120,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - setup_dx:
+      - setup_dx
       - QA Deployment:
           requires:
             - setup_dx
