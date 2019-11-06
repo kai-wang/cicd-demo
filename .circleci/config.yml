@@ -89,7 +89,7 @@ jobs:
           name: "Create new package"
           command: |
             # Create packaged version
-            sfdx force:package:version:create --package DreamHouse --versionnumber $VERSION_NUMBER -x --wait 10 --json
+            sfdx force:package:version:create -x --package DreamHouse --versionnumber 1.0.0.NEXT --wait 10 --json
             # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
             echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
             echo $PACKAGE_VERSION_ID
