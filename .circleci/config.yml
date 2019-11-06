@@ -91,9 +91,6 @@ jobs:
             echo $PACKAGE_VERSION_ID
             # Install package in DevHub org (this is a compiled library of the app)
             sfdx force:package:list
-      - run:
-          name: "Install package to scratch org"
-          command: |
             sfdx force:package:install --package $PACKAGE_VERSION_ID --wait 10 --publishwait 10 --noprompt
             # Assign DreamHouse permission set to scratch org default user
             sfdx force:user:permset:assign --permsetname DreamHouse
