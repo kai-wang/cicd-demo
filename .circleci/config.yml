@@ -84,9 +84,12 @@ jobs:
             if [ "$IS_RELEASED" = "true" ]; then MINOR_VERSION=$(($MINOR_VERSION+1)); fi;
             VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
             echo $VERSION_NUMBER
-            echo $PACKAGE_NAME
+      - run:
+          name: "Create new package"
+          command: |
+            echo $VERSION_NUMBER
             # Create packaged version
-            PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create -x --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+            PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create -x --package DreamHouse --versionnumber $VERSION_NUMBER --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
             # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
             echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
             echo $PACKAGE_VERSION_ID
