@@ -89,7 +89,7 @@ jobs:
           name: "Create new package"
           command: |
             # Create packaged version
-            export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER -x --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+            PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER -x --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
             # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
             echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
             echo $PACKAGE_VERSION_ID
